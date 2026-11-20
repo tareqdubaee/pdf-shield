@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <meta content="#0c0e12" name="theme-color" />
+  <title>PDF Shield — Offline Local PDF Toolkit</title>
+  <link href="./manifest.json" rel="manifest" />
+  <link href="./styles.css" rel="stylesheet" />
+</head>
+<body class="bg-surface text-on-surface flex flex-col min-h-screen">
+
+  <!-- Top Header -->
+  <header class="fixed top-0 inset-x-0 z-50 bg-surface-lowest backdrop-blur pt-safe shadow-header">
+    <div class="h-16 px-3 flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2 min-w-0">
+        <div class="w-10 h-10 rounded-lg bg-surface-high flex items-center justify-center text-primary-container shrink-0">
+          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm0 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+          </svg>
+        </div>
+        <div class="flex flex-col min-w-0">
+          <div class="flex items-center gap-1.5">
+            <span class="font-headline-sm text-on-surface truncate">PDF Shield</span>
+            <span class="font-label-sm text-primary-dim px-1.5 py-0.5 rounded bg-primary-tint">LOCAL</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+            <span id="engineBadgeText" class="font-label-sm text-tertiary tracking-wide uppercase">Preparing Engine...</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-1.5 shrink-0">
+        <div id="netBadge" class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-tertiary-tint text-tertiary">
+          <span class="font-label-sm font-semibold tracking-wider uppercase">0% Cloud</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex flex-col relative w-full px-3 pt-20 pb-44 bg-surface flex-1">
+
+    <!-- VIEW 1: TOOLS -->
+    <div id="view-tools" class="flex flex-col w-full gap-4">
+
+      <!-- Status & Privacy Banner -->
+      <section class="flex flex-col gap-2 bg-surface-low rounded-xl p-3 shadow-md">
+        <div class="flex items-center justify-between gap-2">
+          <div class="flex items-center gap-2 min-w-0">
+            <div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center shrink-0 text-primary-container">
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+              </svg>
+            </div>
+            <div class="flex flex-col min-w-0">
+              <div class="flex items-center gap-1.5">
+                <h1 class="font-headline-sm text-on-surface truncate">PDF Forge Local</h1>
+                <span class="font-label-sm text-primary bg-surface-highest px-1.5 py-0.5 rounded">PWA</span>
+              </div>
+              <span class="font-body-sm text-on-surface-variant truncate">On-device document processing</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-high shrink-0">
+            <span id="offlineReadyPill" class="font-label-sm text-primary font-semibold uppercase tracking-wider">Caching...</span>
+          </div>
+        </div>
+        <div class="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-surface-highest text-on-surface-variant">
+          <span class="font-label-sm text-tertiary-dim font-medium truncate">100% Local • No File Upload</span>
+          <span class="font-label-sm text-on-surface-variant">RAM Sandbox</span>
+        </div>
+      </section>
+
+      <!-- Tool Mode Switcher -->
+      <section class="flex flex-col gap-1.5">
+        <div class="flex items-center justify-between px-1">
+          <span class="font-label-sm text-on-surface-variant uppercase tracking-wider">Select Tool</span>
+          <span id="activeModeLabel" class="font-label-sm text-primary">Mode: Merge PDF</span>
+        </div>
+        <div id="toolTabs" class="flex items-center gap-2 overflow-x-auto py-1">
+          <button data-mode="merge" class="tool-tab active flex items-center gap-2 px-4 py-3 rounded-xl font-label-md shrink-0 min-h-[44px]" type="button">
+            <span>Merge PDF</span>
+          </button>
+          <button data-mode="split" class="tool-tab flex items-center gap-2 px-4 py-3 rounded-xl font-label-md shrink-0 min-h-[44px]" type="button">
+            <span>Split Pages</span>
+          </button>
+          <button data-mode="compress" class="tool-tab flex items-center gap-2 px-4 py-3 rounded-xl font-label-md shrink-0 min-h-[44px]" type="button">
+            <span>Compress</span>
+          </button>
+          <button data-mode="images" class="tool-tab flex items-center gap-2 px-4 py-3 rounded-xl font-label-md shrink-0 min-h-[44px]" type="button">
+            <span>Images to PDF</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- File Picker & Camera Scan Card -->
+      <section class="flex flex-col gap-2">
+        <div id="dropZone" class="rounded-xl bg-surface-low border border-outline-variant p-4 flex flex-col items-center justify-center text-center shadow-lg">
+          <div class="w-14 h-14 rounded-2xl bg-surface-highest flex items-center justify-center mb-2.5 text-primary-container font-headline-sm">+</div>
+          <h2 id="dropTitle" class="font-headline-sm text-on-surface mb-1">Tap to Select PDF Files</h2>
+          <p id="dropDesc" class="font-body-sm text-on-surface-variant max-w-xs mb-3">
+            Processed locally in browser memory on your device.
+          </p>
+          <div class="w-full flex items-center gap-2">
+            <button id="btnBrowseFiles" class="flex-1 flex items-center justify-center gap-2 h-12 rounded-lg bg-surface-highest text-on-surface font-label-md hover:bg-surface-bright active:scale-98" type="button">
+              <span>Browse Files</span>
+            </button>
+            <button id="btnCameraScan" class="flex items-center justify-center gap-1.5 px-4 h-12 rounded-lg bg-surface-highest text-on-surface-variant hover:text-on-surface font-label-md active:scale-98" type="button">
+              <span>Camera</span>
+            </button>
+          </div>
+          <input id="fileInput" class="hidden" type="file" multiple />
+          <input id="cameraInput" class="hidden" type="file" accept="image/*" capture="environment" />
+        </div>
+      </section>
+
+      <!-- Queue List -->
+      <section class="flex flex-col gap-2">
+        <div class="flex items-center justify-between px-1">
+          <div class="flex items-center gap-2">
+            <h3 class="font-headline-sm text-on-surface">Queue</h3>
+            <span id="queueSummary" class="font-label-sm px-2 py-0.5 rounded-full bg-surface-high text-primary-fixed">0 files • 0.0 MB</span>
+          </div>
+          <button id="btnClearQueue" class="font-label-sm text-error px-2 py-2 min-h-[40px] rounded" type="button">
+            Clear All
+          </button>
+        </div>
+        <div id="queueList" class="flex flex-col gap-2">
+          <div class="rounded-xl bg-surface-container p-4 text-center font-body-sm text-on-surface-variant">
+            No files queued yet. Tap "Browse Files" or "Camera" above.
+          </div>
+        </div>
+      </section>
+
+      <!-- Tool Settings Panel -->
+      <section class="flex flex-col rounded-xl bg-surface-container p-3 shadow-md gap-3">
+        <div class="flex items-center justify-between">
+          <h3 id="settingsTitle" class="font-headline-sm text-on-surface">Merge Settings</h3>
+          <span class="font-label-sm px-2 py-0.5 rounded bg-surface-high text-on-surface-variant">Local</span>
+        </div>
+
+        <!-- Output Filename (Common) -->
+        <div class="flex flex-col gap-1">
+          <label for="outputNameInput" class="font-label-sm text-on-surface-variant uppercase tracking-wider">Output Filename</label>
+          <input id="outputNameInput" class="w-full h-12 px-3 rounded-lg bg-surface-lowest text-on-surface font-label-md" type="text" value="processed_document" />
+        </div>
+
+        <!-- Compress Settings -->
+        <div id="panel-compress" class="tool-panel hidden flex-col gap-2">
+          <label class="font-label-sm text-on-surface-variant uppercase tracking-wider">Compression Preset (DPI / JPEG Quality)</label>
+          <div class="grid grid-cols-3 gap-1.5 p-1 rounded-xl bg-surface-lowest" id="dpiGroup">
+            <button data-dpi="72" data-q="0.55" class="dpi-btn py-2.5 px-2 rounded-lg text-center font-label-sm text-on-surface-variant" type="button">
+              <div class="font-semibold">Small</div>
+              <div class="text-tiny">72 DPI</div>
+            </button>
+            <button data-dpi="120" data-q="0.72" class="dpi-btn active py-2.5 px-2 rounded-lg text-center font-label-sm" type="button">
+              <div class="font-semibold">Balanced</div>
+              <div class="text-tiny">120 DPI</div>
+            </button>
+            <button data-dpi="150" data-q="0.82" class="dpi-btn py-2.5 px-2 rounded-lg text-center font-label-sm text-on-surface-variant" type="button">
+              <div class="font-semibold">Clear</div>
+              <div class="text-tiny">150 DPI</div>
+            </button>
+          </div>
+          <p class="font-body-sm text-on-surface-variant">
+            Renders pages sequentially at lower DPI to shrink scanned/image-heavy PDFs while keeping RAM usage safe on mobile.
+          </p>
+        </div>
+
+        <!-- Split Settings -->
+        <div id="panel-split" class="tool-panel hidden flex-col gap-2">
+          <label class="font-label-sm text-on-surface-variant uppercase tracking-wider">Split Mode</label>
+          <select id="splitModeSelect" class="w-full h-12 px-3 rounded-lg bg-surface-lowest text-on-surface font-label-md">
+            <option value="range" selected>Extract Page Range into One PDF (e.g. 1-3, 5)</option>
+            <option value="each">Split Every Page into Separate PDFs (.ZIP)</option>
+          </select>
+          <div id="rangeInputWrap" class="flex flex-col gap-1">
+            <label for="pageRangeInput" class="font-label-sm text-on-surface-variant uppercase tracking-wider">Page Ranges</label>
+            <input id="pageRangeInput" class="w-full h-12 px-3 rounded-lg bg-surface-lowest text-on-surface font-label-md" placeholder="e.g. 1-3, 5, 8-10" type="text" value="1-2" />
+          </div>
+        </div>
+
+        <!-- Images to PDF Settings -->
+        <div id="panel-images" class="tool-panel hidden flex-col gap-2">
+          <label for="pageSizeSelect" class="font-label-sm text-on-surface-variant uppercase tracking-wider">Page Size</label>
+          <select id="pageSizeSelect" class="w-full h-12 px-3 rounded-lg bg-surface-lowest text-on-surface font-label-md">
+            <option value="A4" selected>A4 (595 × 842 pt)</option>
+            <option value="LETTER">US Letter (612 × 792 pt)</option>
+            <option value="FIT">Fit to Image Dimensions</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- Feedback / Result Banner -->
+      <section id="statusBox" class="hidden rounded-xl bg-surface-low p-3 border border-outline-variant flex flex-col gap-2">
+        <div class="flex items-center justify-between">
+          <span id="statusTitle" class="font-label-md text-tertiary font-semibold">Status</span>
+          <span id="statusMeta" class="font-label-sm text-on-surface-variant"></span>
+        </div>
+        <p id="statusMessage" class="font-body-sm text-on-surface"></p>
+        <div class="w-full h-2 rounded-full bg-surface-lowest overflow-hidden">
+          <div id="progressBar" class="h-full bg-primary-container transition-all" style="width: 0%;"></div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- VIEW 2: VAULT (Session Output History) -->
+    <div id="view-vault" class="hidden flex-col w-full gap-3">
+      <div class="flex items-center justify-between">
+        <h2 class="font-headline-md text-on-surface">Session Vault</h2>
+        <button id="btnClearVault" class="font-label-sm text-error px-2 py-2 min-h-[40px]" type="button">Clear Vault</button>
+      </div>
+      <p class="font-body-sm text-on-surface-variant">
+        Processed files held in current browser memory for quick download or Android sharing.
+      </p>
+      <div id="vaultList" class="flex flex-col gap-2">
+        <div class="rounded-xl bg-surface-container p-4 text-center font-body-sm text-on-surface-variant">
+          No processed files in this session yet.
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 3: SECURITY -->
+    <div id="view-security" class="hidden flex-col w-full gap-3">
+      <h2 class="font-headline-md text-on-surface">Local Sandbox & Privacy</h2>
+      <div class="rounded-xl bg-surface-container p-3 flex flex-col gap-2">
+        <div class="font-label-md text-tertiary">100% Client-Side Execution</div>
+        <p class="font-body-sm text-on-surface-variant">
+          All PDF merging, splitting, compression, and image-to-PDF conversion happen locally in JavaScript inside your browser tab. No files are uploaded to any external server.
+        </p>
+        <div class="font-label-sm text-on-surface pt-1">
+          Connection status: <span id="secConnStatus" class="text-primary">Checking...</span>
+        </div>
+        <div class="font-label-sm text-on-surface">
+          Offline Engine Cache: <span id="secCacheStatus" class="text-tertiary">Checking...</span>
+        </div>
+      </div>
+      <button id="btnPurgeAll" class="w-full h-12 rounded-xl bg-error-container text-on-error-container font-label-md" type="button">
+        Purge Queue & Session Vault
+      </button>
+    </div>
+
+    <!-- VIEW 4: SETTINGS -->
+    <div id="view-settings" class="hidden flex-col w-full gap-3">
+      <h2 class="font-headline-md text-on-surface">App Preferences</h2>
+      <div class="rounded-xl bg-surface-container p-3 flex flex-col gap-3">
+        <div class="flex flex-col gap-1">
+          <label for="defaultPrefixInput" class="font-label-sm text-on-surface-variant uppercase">Default Output Prefix</label>
+          <input id="defaultPrefixInput" class="w-full h-12 px-3 rounded-lg bg-surface-lowest text-on-surface font-label-md" type="text" value="pdf_shield" />
+        </div>
+        <button id="btnSavePrefs" class="w-full h-12 rounded-lg bg-surface-high text-primary font-label-md" type="button">
+          Save Preferences
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Sticky Execution Bar -->
+  <section id="stickyActionBar" class="fixed bottom-16 inset-x-0 z-40 px-3 py-2 bg-surface-lowest border-t border-outline-variant flex flex-col gap-2 pb-safe">
+    <button id="btnPrimaryRun" class="w-full h-[52px] rounded-xl bg-primary-container text-on-primary font-headline-sm flex items-center justify-center gap-2 shadow-lg active:scale-98" type="button">
+      <span id="btnPrimaryLabel">Run Merge PDF</span>
+    </button>
+    <div class="grid grid-cols-2 gap-2">
+      <button id="btnDownloadLatest" disabled class="h-11 rounded-lg bg-surface-high text-on-surface font-label-md flex items-center justify-center gap-1.5 disabled:opacity-40" type="button">
+        <span>Download</span>
+      </button>
+      <button id="btnShareLatest" disabled class="h-11 rounded-lg bg-surface-high text-on-surface font-label-md flex items-center justify-center gap-1.5 disabled:opacity-40" type="button">
+        <span>Share</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- Bottom Navigation Bar -->
+  <nav class="fixed bottom-0 inset-x-0 z-50 pb-safe bg-surface-lowest border-t border-outline-variant" aria-label="Primary Navigation">
+    <div class="flex justify-around items-center h-16 px-2">
+      <button data-nav="tools" class="nav-btn active flex flex-col items-center justify-center gap-0.5 min-w-[60px] min-h-[48px]" type="button">
+        <span class="font-label-sm">Tools</span>
+      </button>
+      <button data-nav="vault" class="nav-btn flex flex-col items-center justify-center gap-0.5 min-w-[60px] min-h-[48px] text-on-surface-variant" type="button">
+        <span class="font-label-sm">Vault</span>
+      </button>
+      <button data-nav="security" class="nav-btn flex flex-col items-center justify-center gap-0.5 min-w-[60px] min-h-[48px] text-on-surface-variant" type="button">
+        <span class="font-label-sm">Security</span>
+      </button>
+      <button data-nav="settings" class="nav-btn flex flex-col items-center justify-center gap-0.5 min-w-[60px] min-h-[48px] text-on-surface-variant" type="button">
+        <span class="font-label-sm">Settings</span>
+      </button>
+    </div>
+  </nav>
+
+  <script src="./app.js"></script>
+</body>
+</html>
